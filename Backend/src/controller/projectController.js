@@ -13,7 +13,7 @@ export const Createproject = async(req,res)=>{
     console.log("new project id is",projectId)
 
     await fs.mkdir(`./projects/${projectId}`);
-    const response = await execPromisified('npm create vite@latest sandbox -- --template react', {
+    const response = await execPromisified('npm exec --yes create vite@latest sandbox -- --template react', {
         cwd: `./projects/${projectId}`})
 
         return res.json({message:"project Created",id:projectId});
