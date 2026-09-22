@@ -1,8 +1,9 @@
 
-import { useState } from 'react'
 import useProject from '../hoonks/apis/mutations/useProject'
+import { useNavigate } from 'react-router-dom';
 
 function CreateProject(){
+    const navigate = useNavigate();
     const {CreateProjectMutation} = useProject();
     // const [clicked, setClicked] = useState(false);
 
@@ -10,10 +11,14 @@ function CreateProject(){
         // setClicked(true);
         console.log("create project api trigger");
         try {
-            await CreateProjectMutation();
-            console.log("Now we should redirect to the editor");
+            const res = await CreateProjectMutation();
+            console.log("Now we should redirect to the editor",res.id);
+        if (!res?.id) {
+            throw new Error('Create project response did not include an id');
+        }
+        navigate(`/project/${res.id}`);
         } catch (error) {
-            console.error("Error occurred while creating the project:", error);
+        console.error("Error occurred while creating the project:", error);
         }
     }
  

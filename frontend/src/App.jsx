@@ -4,8 +4,9 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
 import { PingComponent } from './components/atoms/PingComponents'
-import CreateProject from './pages/createProject'
+import CreateProject from './pages/CreateProject'
 import { Routes,Route } from 'react-router-dom'
+import ProjectPlayground from './pages/ProjrctPlayground'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -16,6 +17,7 @@ function App() {
       <PingComponent></PingComponent> */}
        <Routes>
       <Route path="/" element={<CreateProject />} />
+       <Route path="/project/:projectId" element={<ProjectPlayground />} />
     </Routes>
     </>
   )
