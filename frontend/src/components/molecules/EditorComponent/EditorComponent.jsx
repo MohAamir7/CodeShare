@@ -1,23 +1,37 @@
-import Editor from "@monaco-editor/react";
-import React, { useRef } from "react";
+import Editor, { useMonaco } from "@monaco-editor/react";
+import { theme } from "antd";
+import React, { useEffect, useState } from "react";
 
 export default function EditorComponent() {
-  const editorRef = useRef(null);
+  // const editorRef = useRef(null);
+  // const monaco = useMonaco();
+  const [editorState, setEditorState] = useState({
+    theme: null,
+  });
 
-  async function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
-
+  async function downloadTheme() {
     const res = await fetch("/Dracula.json");
-    if (!res.ok) {
-      throw new Error(`Failed to load Dracula.json: ${res.status} ${res.statusText}`);
-    }
 
     const data = await res.json();
-    monaco.editor.defineTheme("dracula", data);
-    monaco.editor.setTheme("dracula");
+    console.log(data.base);
+    setEditorState({ ...editorState, theme: data });
   }
 
+  function handleEditorTheme(editor, monaco) {
+        monaco.editor.defineTheme('dracula', editorState.theme);
+        monaco.editor.setTheme('dracula');
+    }
+  //   function handleEditorDidMount(editor, monaco) {
+  //   editorRef.current = editor;
+  // }
+
+  useEffect(() => {
+    downloadTheme();
+  }, []);
+
   return (
+    <>
+    {editorState.theme &&
     <Editor
       height="90vh"
       defaultLanguage="javascript"
@@ -26,7 +40,9 @@ export default function EditorComponent() {
         fontSize: 18,
         fontFamily: "monospace",
       }}
-      onMount={handleEditorDidMount}
+      onMount={handleEditorTheme}
     />
+    }
+    </>
   );
 }
