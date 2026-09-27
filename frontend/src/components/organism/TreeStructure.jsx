@@ -1,20 +1,26 @@
+import { useEffect } from "react";
 import useProjectTree from "../../hoonks/apis/queries/useProjectTree.js";
+import { ProjectTreeStore } from "../../store/projectTreeStroe.js";
+import { useParams } from "react-router-dom";
 
 
-function TreeStucture({ projectId }){
+export const TreeStucture =()=>{
+    const {treeStructure,setTreeStructure} = ProjectTreeStore();
+    const {projectId} = useParams();
 
-    const { data, isLoading, isError, error } = useProjectTree(projectId)
-    console.log(data);
-
-    if (isLoading) return <p>Loading project tree...</p>
-    if (isError) return <p>Unable to load project tree: {error.message}</p>
+    useEffect(()=>{
+        if (treeStructure) {
+            console.log("tree Path",treeStructure);
+        } else{
+            setTreeStructure(projectId);
+        }
+    },[treeStructure, setTreeStructure, projectId]);
 
     return(
         <>
             <h1>Tree Structure</h1>
-            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         </>
     )
 }
 
-export default TreeStucture;
+// export default TreeStucture;

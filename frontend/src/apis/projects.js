@@ -14,8 +14,8 @@ export const CreateProject = async()=>{
 export const GetProjectTree = async(projectId)=>{
     try {
         const res = await axios.get(`/api/v1/projects/${projectId}/tree`)
-        // console.log(res.data);
-        return res.data
+        console.log(res.data.data);
+        return res?.data?.data;
     } catch (error) {
         console.log(error);
         throw error;
