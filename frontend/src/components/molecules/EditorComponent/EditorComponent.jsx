@@ -30,9 +30,10 @@ export default function EditorComponent() {
   }, []);
 
   return (
-    <>
+    <div className="min-h-0 min-w-0 flex-1 overflow-hidden bg-[#1e1e1e]">
     {editorState.theme &&
     <Editor
+      className="h-full w-full"
       height="90vh"
       defaultLanguage="javascript"
       defaultValue="Welcome to PlayGround"
@@ -43,6 +44,6 @@ export default function EditorComponent() {
       onMount={handleEditorTheme}
     />
     }
-    </>
+    </div>
   );
 }
