@@ -1,8 +1,17 @@
 import EditorComponent from "../components/molecules/EditorComponent/EditorComponent";
 import { EditorButton } from "../components/atoms/EditorButton/EditorButton";
 import {TreeStucture} from "../components/organism/TreeStructure";
+import { ProjectTreeStore } from "../store/projectTreeStroe";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function ProjectPlayground(){
+    const projectIdFromUrl = useParams();
+    const{projectId,setProjectId} = ProjectTreeStore();
+
+    useEffect(()=>(
+        setProjectId(projectIdFromUrl)
+    ),[projectId,setProjectId])
     return(
         <div className="flex h-screen w-full overflow-hidden bg-[#1e1e1e] text-left text-slate-200">
         {/* Project Id :{projectId} */}
