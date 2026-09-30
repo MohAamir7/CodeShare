@@ -1,28 +1,32 @@
-import EditorComponent from "../components/molecules/EditorComponent/EditorComponent";
-import { EditorButton } from "../components/atoms/EditorButton/EditorButton";
-import {TreeStucture} from "../components/organism/TreeStructure";
-import { ProjectTreeStore } from "../store/projectTreeStroe";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { ProjectTreeStore } from "../store/projectTreeStroe";
 
-export default function ProjectPlayground(){
-    const projectIdFromUrl = useParams();
-    const{projectId,setProjectId} = ProjectTreeStore();
+export default function ProjectPlayground() {
 
-    useEffect(()=>(
-        setProjectId(projectIdFromUrl)
-    ),[projectId,setProjectId])
-    return(
-        <div className="flex h-screen w-full overflow-hidden bg-[#1e1e1e] text-left text-slate-200">
-        {/* Project Id :{projectId} */}
-        <TreeStucture/>
-        <div className="flex min-w-0 flex-1 flex-col-reverse">
-            <EditorComponent/>
-            <div className="flex h-9 shrink-0 items-center border-t border-[#333] bg-[#252526]">
-                <EditorButton isActive={false}/>
-                <EditorButton isActive={true}/>
-            </div>
+    const { projectId: projectIdFromUrl } = useParams();
+
+    const projectId = ProjectTreeStore(
+        (state) => state.projectId
+    );
+
+    const setProjectId = ProjectTreeStore(
+        (state) => state.setProjectId
+    );
+
+    useEffect(() => {
+
+        if (!projectIdFromUrl) return;
+
+        setProjectId(projectIdFromUrl);
+
+    }, [projectIdFromUrl, setProjectId]);
+
+    return (
+        <div>
+            URL Project ID: {projectIdFromUrl}
+            <br />
+            Zustand Project ID: {projectId}
         </div>
-        </div>
-    )
+    );
 }
