@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 
 export const TreeNode = ({ folderName }) => {
   const [visibility, setVisibility] = useState({});
@@ -19,35 +20,28 @@ export const TreeNode = ({ folderName }) => {
       {Array.isArray(folderName.children) ? (
         <button
           onClick={() => toggleVisibility(folderName.name)}
-          style={{
-            border: "none",
-            cursor: "pointer",
-            outline: "none",
-            color: "white",
-            backgroundColor: "transparent",
-            paddingTop: "15px",
-            fontSize: "16px",
-          }}
+          className="flex w-full items-center gap-1 rounded px-1 py-1 text-left text-[13px] text-[#cccccc] transition-colors hover:bg-[#2a2d2e] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#007fd4]"
         >
-          {folderName.name}
+          {visibility[folderName.name] ? (
+            <IoIosArrowDown aria-hidden="true" className="shrink-0 text-[#858585]" />
+          ) : (
+            <IoIosArrowForward aria-hidden="true" className="shrink-0 text-[#858585]" />
+          )}
+          <span className="truncate">{folderName.name}</span>
         </button>
       ) : (
-        <p
-          style={{
-            paddingTop: "5px",
-            fontSize: "15px",
-            cursor: "pointer",
-            marginLeft: "5px",
-          }}
-        >
-          {folderName.name}
+        <p className="flex items-center gap-2 rounded px-2 py-1 text-[13px] text-[#cccccc] hover:bg-[#2a2d2e]">
+          <span aria-hidden="true" className="text-[10px] text-[#858585]">◇</span>
+          <span className="truncate">{folderName.name}</span>
         </p>
       )}
       {visibility[folderName.name] &&
         Array.isArray(folderName.children) &&
-        folderName.children.map((child) => (
-          <TreeNode folderName={child} key={child.path ?? child.name} />
-        ))}
+        <div className="ml-2 border-l border-[#3c3c3c] pl-2">
+          {folderName.children.map((child) => (
+            <TreeNode folderName={child} key={child.path ?? child.name} />
+          ))}
+        </div>}
     </>
   );
 };
