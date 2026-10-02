@@ -30,6 +30,30 @@ app.get('/ping', (req, res) => {
   return res.json({ message: 'pong' });
 });
 
+const editorNamespace = io.of('/editor');
+editorNamespace.on('connection', (socket) => {
+  console.log(`User connected to editor namespace: ${socket.id}`);
+
+  const projectId = '123';
+
+  if(projectId) {
+    var watcher = chokidar.watcher(`./projects/${projectId}`, {
+      ignored:(path)=> path.includes('node_modules') || path.includes('.git'),
+      awaitWriteFinsh:{
+        stabilityThreshold: 2000,
+      },
+      ignoreInitial:true,
+    });
+    watcher.on('all',(event,path)=>{
+      console.log(`File ${event} at path: ${path}`);
+      // socket.emit('file-changed',{event,path});
+    });
+  }
+
+   handleEditorEvent(socket);
+});
+
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
