@@ -1,6 +1,8 @@
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { theme } from "antd";
 import React, { useEffect, useState } from "react";
+import { useActiveFileTabStore } from "../../../store/ActiveFileStoreTab";
+import { useEditorSocket } from "../../../store/EditorSocketStore";
 
 export default function EditorComponent() {
   // const editorRef = useRef(null);
@@ -9,6 +11,14 @@ export default function EditorComponent() {
     theme: null,
   });
 
+  const {EditorSocket} = useEditorSocket();
+  const {activeFileTab, setActiveFileTab} = useActiveFileTabStore();
+
+
+  EditorSocket?.on("readFilesSuccess", (data) => {
+    console.log("Received file content:", data);
+    setActiveFileTab(data.path, data.value);
+  });
   async function downloadTheme() {
     const res = await fetch("/Dracula.json");
 
@@ -42,6 +52,7 @@ export default function EditorComponent() {
         fontFamily: "monospace",
       }}
       onMount={handleEditorTheme}
+      value= {activeFileTab?.value?activeFileTab.value:"Welcome to PlayGround"}
     />
     }
     </div>

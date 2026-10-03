@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export const EditorSocket = create((set) => ({
+export const useEditorSocket = create((set) => ({
     EditorSocket: null,
 
     setEditorSocket: async (incomingSocket) => {

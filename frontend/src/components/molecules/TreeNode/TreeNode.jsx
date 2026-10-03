@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import {io} from "socket.io-client";
+import { useEditorSocket } from "../../../store/EditorSocketStore";
 
 export const TreeNode = ({ folderName }) => {
   const [visibility, setVisibility] = useState({});
 
+  const {EditorSocket} = useEditorSocket();
+
   if (!folderName) {
     return null;
+  }
+
+  function handleDoubleClick(folderName) {
+    console.log("Double clicked on folder:", folderName);
+    EditorSocket.emit("readFiles", { pathTofileFolder: folderName.path });
   }
 
   function toggleVisibility(name) {
@@ -30,16 +39,16 @@ export const TreeNode = ({ folderName }) => {
           <span className="truncate">{folderName.name}</span>
         </button>
       ) : (
-        <p className="flex items-center gap-2 rounded px-2 py-1 text-[13px] text-[#cccccc] hover:bg-[#2a2d2e]">
+        <p className="flex items-center gap-2 rounded px-2 py-1 text-[13px] text-[#cccccc] hover:bg-[#2a2d2e]" onDoubleClick={()=>handleDoubleClick(folderName)}>
           <span aria-hidden="true" className="text-[10px] text-[#858585]">◇</span>
           <span className="truncate">{folderName.name}</span>
         </p>
       )}
       {visibility[folderName.name] &&
         Array.isArray(folderName.children) &&
-        <div className="ml-2 border-l border-[#3c3c3c] pl-2">
+        <div className="ml-2 border-l border-[#3c3c3c] pl-2 cursor-pointer" >
           {folderName.children.map((child) => (
-            <TreeNode folderName={child} key={child.path ?? child.name} />
+            <TreeNode folderName={child} key={child.path ?? child.name}  />
           ))}
         </div>}
     </>
