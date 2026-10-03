@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import http from 'http';
+import chokidar from 'chokidar';
+import { handleEditorEvents } from './src/socketHandler/editorHandlers.js';
 
 import { PORT } from './src/config/serverConfig.js';
 import apiRoutes from './src/routes/apiRoutes.js';
@@ -34,10 +36,11 @@ const editorNamespace = io.of('/editor');
 editorNamespace.on('connection', (socket) => {
   console.log(`User connected to editor namespace: ${socket.id}`);
 
-  const projectId = '123';
+  const projectId = socket.handshake.query.projectId;
+  console.log(`Project ID: ${projectId}`);
 
   if(projectId) {
-    var watcher = chokidar.watcher(`./projects/${projectId}`, {
+    var watcher = chokidar.watch(`./projects/${projectId}`, {
       ignored:(path)=> path.includes('node_modules') || path.includes('.git'),
       awaitWriteFinsh:{
         stabilityThreshold: 2000,
@@ -46,11 +49,11 @@ editorNamespace.on('connection', (socket) => {
     });
     watcher.on('all',(event,path)=>{
       console.log(`File ${event} at path: ${path}`);
-      // socket.emit('file-changed',{event,path});
+      socket.emit('file-changed',{event,path});
     });
   }
 
-   handleEditorEvent(socket);
+   handleEditorEvents(socket);
 });
 
 
