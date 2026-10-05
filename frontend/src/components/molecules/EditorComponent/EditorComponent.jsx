@@ -7,24 +7,37 @@ import { useEditorSocket } from "../../../store/EditorSocketStore";
 export default function EditorComponent() {
   // const editorRef = useRef(null);
   // const monaco = useMonaco();
+  let timerID = null;
   const [editorState, setEditorState] = useState({
     theme: null,
   });
 
   const {EditorSocket} = useEditorSocket();
-  const {activeFileTab, setActiveFileTab} = useActiveFileTabStore();
+  const {activeFileTab} = useActiveFileTabStore();
 
 
-  EditorSocket?.on("readFilesSuccess", (data) => {
-    console.log("Received file content:", data);
-    setActiveFileTab(data.path, data.value);
-  });
+ 
   async function downloadTheme() {
     const res = await fetch("/Dracula.json");
 
     const data = await res.json();
     console.log(data.base);
     setEditorState({ ...editorState, theme: data });
+  }
+
+  function handleChange(value, event) {
+    
+    if(timerID != null){
+      clearTimeout(timerID);
+    }
+
+    timerID = setTimeout(() => {
+      console.log("Sending update for file:", activeFileTab.path);
+      EditorSocket.emit("updateFile", {
+        pathTofileFolder: activeFileTab.path,
+        value: value,
+      });
+    }, 2000);
   }
 
   function handleEditorTheme(editor, monaco) {
@@ -53,6 +66,7 @@ export default function EditorComponent() {
       }}
       onMount={handleEditorTheme}
       value= {activeFileTab?.value?activeFileTab.value:"Welcome to PlayGround"}
+      onChange={handleChange}
     />
     }
     </div>
