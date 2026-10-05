@@ -25,17 +25,17 @@ export default function EditorComponent() {
     setEditorState({ ...editorState, theme: data });
   }
 
-  function handleChange(value, event) {
+  function handleChange(value) {
     
     if(timerID != null){
       clearTimeout(timerID);
     }
 
     timerID = setTimeout(() => {
-      console.log("Sending update for file:", activeFileTab.path);
-      EditorSocket.emit("updateFile", {
+      console.log("Sending update for file:", activeFileTab.path,value);
+      EditorSocket.emit("writeFiles", {
         pathTofileFolder: activeFileTab.path,
-        value: value,
+        data: value,
       });
     }, 2000);
   }
