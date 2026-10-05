@@ -53,7 +53,7 @@ editorNamespace.on('connection', (socket) => {
     });
   }
 
-   handleEditorEvents(socket);
+   handleEditorEvents(socket,editorNamespace);
 });
 
 
