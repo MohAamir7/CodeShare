@@ -13,11 +13,11 @@ export const ProjectTreeStore = create((set,get) => ({
     setTreeStructure:async (projectId)=>{
         const id = get().projectId;
         const tree = await queryClient.fetchQuery({
-            queryKey:[`projectTree-${id}`],
+            queryKey:[`projectTree-${projectId}`],
             queryFn:()=> GetProjectTree({projectId:id})
         })
 
-        console.log(tree);
+        console.log(tree,id);
 
         set({treeStructure:tree});
     },

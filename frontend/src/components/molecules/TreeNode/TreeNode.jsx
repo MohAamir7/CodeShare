@@ -2,11 +2,18 @@ import { useState } from "react";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import {io} from "socket.io-client";
 import { useEditorSocket } from "../../../store/EditorSocketStore";
+import { useFileContextMenuStore } from "../../../store/fileContextMenuStore";
 
 export const TreeNode = ({ folderName }) => {
   const [visibility, setVisibility] = useState({});
 
   const {EditorSocket} = useEditorSocket();
+  const {
+    setX:fileContextX,
+    setY:fileContextY,
+    setFile,
+    setIsOpen:isFileContextOpen,
+  } = useFileContextMenuStore();
 
   if (!folderName) {
     return null;
@@ -15,6 +22,16 @@ export const TreeNode = ({ folderName }) => {
   function handleDoubleClick(folderName) {
     console.log("Double clicked on folder:", folderName);
     EditorSocket.emit("readFiles", { pathTofileFolder: folderName.path });
+  }
+
+  function handleContextMenu(event, folderName) {
+    event.preventDefault();
+    console.log("Right clicked on folder:", folderName.path);
+    // Here you can implement the logic to show a context menu
+    setFile(folderName.path);
+    fileContextX(event.clientX);
+    fileContextY(event.clientY);
+    isFileContextOpen(true);
   }
 
   function toggleVisibility(name) {
@@ -39,7 +56,7 @@ export const TreeNode = ({ folderName }) => {
           <span className="truncate">{folderName.name}</span>
         </button>
       ) : (
-        <p className="flex items-center gap-2 rounded px-2 py-1 text-[13px] text-[#cccccc] hover:bg-[#2a2d2e]" onDoubleClick={()=>handleDoubleClick(folderName)}>
+        <p className="flex items-center gap-2 rounded px-2 py-1 text-[13px] text-[#cccccc] hover:bg-[#2a2d2e]" onDoubleClick={()=>handleDoubleClick(folderName)} onContextMenu={(event) => handleContextMenu(event, folderName)}>
           <span aria-hidden="true" className="text-[10px] text-[#858585]">◇</span>
           <span className="truncate">{folderName.name}</span>
         </p>

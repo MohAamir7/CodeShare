@@ -10,13 +10,14 @@ import { io } from "socket.io-client";
 export default function ProjectPlayground() {
   const { projectId: projectIdFromUrl } = useParams();
 
-  const { projectId, setProjectId } = ProjectTreeStore();
+  const { projectId, setProjectId,setTreeStructure } = ProjectTreeStore();
   const { setEditorSocket } = useEditorSocket();
 
   useEffect(() => {
     if (!projectIdFromUrl) return;
 
     setProjectId(projectIdFromUrl);
+    setTreeStructure(projectIdFromUrl);
 
     const socket = io(`${import.meta.env.VITE_BACKEND_URL}/editor`, {
       query: { projectId: projectIdFromUrl },

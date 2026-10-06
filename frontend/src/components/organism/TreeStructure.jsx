@@ -1,18 +1,26 @@
 import { useEffect } from "react";
 import { ProjectTreeStore } from "../../store/projectTreeStroe.js";
 import { TreeNode } from "../molecules/TreeNode/TreeNode.jsx";
-
+import { useFileContextMenuStore } from "../../store/fileContextMenuStore.js";
+import {FileContextMenu} from "../molecules/ContextMenu/FileContextMenu.jsx";
 export const TreeStucture = () => {
     // const projectId = ProjectTreeStore((state) => state.projectId);
-    const {treeStructure,setTreeStructure} = ProjectTreeStore();
+    const { treeStructure, setTreeStructure } = ProjectTreeStore();
 
-    useEffect(()=>{
-        if(treeStructure){
-            console.log(treeStructure)
-        }else{
-            setTreeStructure()
+    const {
+        file,
+        isOpen: isFileContextOpen,
+        x: fileContextX,
+        y: fileContextY,
+    } = useFileContextMenuStore();
+
+    useEffect(() => {
+        if (treeStructure) {
+            console.log(treeStructure);
+        } else {
+            setTreeStructure();
         }
-    })
+    }, [treeStructure, setTreeStructure]);
 
     // console.log("TreeStructure rendered", projectId);
 
@@ -20,7 +28,10 @@ export const TreeStucture = () => {
         <aside>
             <h1>Tree Structure</h1>
             {/* <p>Project ID: {projectId}</p> */}
-            <TreeNode folderName={treeStructure}/>
+            {isFileContextOpen && fileContextX && fileContextY && (
+            <FileContextMenu x={fileContextX} y={fileContextY} path={file} />
+            )}
+            <TreeNode folderName={treeStructure} />
         </aside>
     );
 };
