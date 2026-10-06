@@ -60,6 +60,9 @@ export const handleEditorEvents = (socket,editorNamespace)=>{
         try {
             const res = await fs.unlink(pathTofileFolder);
             console.log(`File deleted successfully at path: ${pathTofileFolder}`);
+            socket.emit("deleteFiles",{
+                data:"Delete file done"
+            })
         } catch (error) {
             console.log("Error deleting the file",error);
             socket.emit("error",{
@@ -72,6 +75,7 @@ export const handleEditorEvents = (socket,editorNamespace)=>{
         try {
             const res = await fs.mkdir(pathTofileFolder);
             console.log(`Folder created successfully at path: ${pathTofileFolder}`);
+
         } catch (error) {
             console.log("Error creating the folder",error);
             socket.emit("error",{
