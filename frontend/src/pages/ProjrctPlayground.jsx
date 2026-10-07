@@ -6,6 +6,7 @@ import EditorComponent from "../components/molecules/EditorComponent/EditorCompo
 import { EditorButton } from "../components/atoms/EditorButton/EditorButton";
 import { useEditorSocket } from "../store/EditorSocketStore";
 import { io } from "socket.io-client";
+import { BrowserTerminal } from "../components/molecules/BrowserTerminal/BrowserTerminal";
 
 export default function ProjectPlayground() {
   const { projectId: projectIdFromUrl } = useParams();
@@ -42,6 +43,9 @@ export default function ProjectPlayground() {
           </div>
           <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
             <EditorComponent />
+          </div>
+          <div>
+            <BrowserTerminal/>
           </div>
         </section>
       </main>
